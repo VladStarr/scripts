@@ -88,8 +88,8 @@ then
   sleep 60
 
   echo "Copying ${namespace}/${pvc_name}:${path} from ${source_context} to ${dest_context}..."
-  kubectl exec --context $source_context --namespace $namespace busybox -- tar cf - $path | \
-  kubectl exec --context $dest_context --namespace $namespace -i busybox -- tar xvf - -C /
+  kubectl exec --context $source_context --namespace $namespace $name -- tar cf - $path | \
+  kubectl exec --context $dest_context --namespace $namespace -i $name -- tar xvf - -C /
 fi
 
 if [[ ! -z $remove_pods ]]
