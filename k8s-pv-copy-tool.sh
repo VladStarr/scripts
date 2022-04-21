@@ -60,29 +60,29 @@ esac; shift; done
 if [[ -z $remove_pods ]]
 then
   echo "apiVersion: v1
-  kind: Pod
-  metadata:
+kind: Pod
+metadata:
+  name: ${name}
+  namespace: ${namespace}
+  labels:
     name: ${name}
-    namespace: ${namespace}
-    labels:
-      name: ${name}
-  spec:
-    containers:
-    - name: ${name}-busybox
-      image: busybox
-      command: 
-        - sh
-        - -c
-        - --
-      args: 
-        - 'while true; do sleep 30; done'
-      volumeMounts:
-        - mountPath: ${path}
-          name: ${name}-volume
-    volumes:
-    - name: ${name}-volume
-      persistentVolumeClaim:
-        claimName: ${pvc_name}" | tee >(kubectl --context $source_context apply -f -) >(kubectl --context $dest_context apply -f -) > /dev/null
+spec:
+  containers:
+  - name: ${name}-busybox
+    image: busybox
+    command:
+      - sh
+      - -c
+      - --
+    args:
+      - 'while true; do sleep 30; done'
+    volumeMounts:
+      - mountPath: ${path}
+        name: ${name}-volume
+  volumes:
+  - name: ${name}-volume
+    persistentVolumeClaim:
+      claimName: ${pvc_name}" | tee >(kubectl --context $source_context apply -f -) >(kubectl --context $dest_context apply -f -) > /dev/null
 
   echo "Waiting 60 seconds for pods to start..."
   sleep 60
